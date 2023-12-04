@@ -42,3 +42,7 @@ export const signout = () => {
   localStorage.setItem('ACCESS_TOKEN', null);
   window.location.href = '/login';
 };
+
+export const signup = (userDTO) => {
+  return call('/auth/signup', 'POST', userDTO);
+};
