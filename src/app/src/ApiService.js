@@ -37,3 +37,8 @@ export const signin = (userDTO) => {
     }
   });
 };
+
+export const signout = () => {
+  localStorage.setItem('ACCESS_TOKEN', null);
+  window.location.href = '/login';
+};

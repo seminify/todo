@@ -1,15 +1,26 @@
-import { Container, List, Paper } from '@mui/material';
+import {
+  AppBar,
+  Button,
+  Container,
+  Grid,
+  List,
+  Paper,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import AddTodo from './AddTodo';
-import { call } from './ApiService';
+import { call, signout } from './ApiService';
 import './App.css';
 import Todo from './Todo';
 
 const App = () => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     call('/todo', 'GET', null).then((response) => {
       setItems(response.data);
+      setLoading(false);
     });
   }, []);
   const addItem = (item) => {
@@ -27,6 +38,29 @@ const App = () => {
       setItems(response.data);
     });
   };
+  const navigationBar = (
+    <AppBar position='static'>
+      <Toolbar>
+        <Grid
+          container
+          justifyContent='space-between'
+        >
+          <Grid item>
+            <Typography variant='h6'>오늘의 할일</Typography>
+          </Grid>
+          <Grid item>
+            <Button
+              color='inherit'
+              raised
+              onClick={signout}
+            >
+              로그아웃
+            </Button>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </AppBar>
+  );
   const todoItems = items.length > 0 && (
     <Paper
       style={{
@@ -45,14 +79,21 @@ const App = () => {
       </List>
     </Paper>
   );
-  return (
-    <div className='App'>
+  const loadingPage = <h1>로딩중..</h1>;
+  const todoListPage = (
+    <div>
+      {navigationBar}
       <Container maxWidth='md'>
         <AddTodo addItem={addItem} />
         <div className='TodoList'>{todoItems}</div>
       </Container>
     </div>
   );
+  let content = loadingPage;
+  if (!loading) {
+    content = todoListPage;
+  }
+  return <div className='App'>{content}</div>;
 };
 
 export default App;
