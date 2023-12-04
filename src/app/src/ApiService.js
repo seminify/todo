@@ -25,3 +25,11 @@ export const call = (url, method, request) => {
       console.log(error);
     });
 };
+
+export const signin = (userDTO) => {
+  return call('/auth/signin', 'POST', userDTO).then((response) => {
+    if (response.token) {
+      window.location.href = '/';
+    }
+  });
+};
