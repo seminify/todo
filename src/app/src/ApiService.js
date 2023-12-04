@@ -1,8 +1,11 @@
 export const call = (url, method, request) => {
-  let options = {
-    headers: new Headers({
-      'Content-Type': 'application/json',
-    }),
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+  const accessToken = localStorage.getItem('ACCESS_TOKEN');
+  if (accessToken && accessToken !== null) {
+    headers.append('Authorization', 'Bearer ' + accessToken);
+  }
+  const options = {
+    headers,
     url,
     method,
   };
@@ -29,6 +32,7 @@ export const call = (url, method, request) => {
 export const signin = (userDTO) => {
   return call('/auth/signin', 'POST', userDTO).then((response) => {
     if (response.token) {
+      localStorage.setItem('ACCESS_TOKEN', response.token);
       window.location.href = '/';
     }
   });
