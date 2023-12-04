@@ -13,6 +13,11 @@ export const call = (url, method, request) => {
     .then((response) => {
       if (response.status === 200) {
         return response.json();
+      } else if (response.status === 403) {
+        window.location.href = '/login';
+      } else {
+        Promise.reject(response);
+        throw Error(response);
       }
     })
     .catch((error) => {
