@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.seminify.app.model.UserEntity;
 import org.seminify.app.persistence.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -24,7 +25,11 @@ public class UserService {
         return userRepository.save(userEntity);
     }
 
-    public UserEntity getByCredentials(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
+    public UserEntity getByCredentials(String username, String password, PasswordEncoder encoder) {
+        UserEntity originalUser = userRepository.findByUsername(username);
+        if (originalUser != null && encoder.matches(password, originalUser.getPassword())) {
+            return originalUser;
+        }
+        return null;
     }
 }
