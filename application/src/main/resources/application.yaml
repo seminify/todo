@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: application
+  datasource:
+    url: ${URL}
+    password: ${PASSWORD}
+    username: ${USERNAME}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        "[format_sql]": true
+        "[hightlight_sql]": true
+    show-sql: true
