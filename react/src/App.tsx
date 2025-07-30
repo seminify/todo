@@ -1,32 +1,62 @@
+import { Container, List, Paper } from "@mui/material";
 import { useState } from "react";
 import "./App.css";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { AddTodo, TodoComponent, type Todo } from "./Todo";
 
 export default () => {
-  const [count, setCount] = useState(0);
+  const [todos, setTodos] = useState<Todo[]>([
+    {
+      id: 0,
+      title: "Hello World 0",
+      done: true,
+    },
+    {
+      id: 1,
+      title: "Hello World 1",
+      done: true,
+    },
+  ]);
+  const addTodo = (formData: FormData) => {
+    setTodos([
+      ...todos,
+      {
+        id: todos.length + 1,
+        title: formData.get("title")?.toString() ?? "",
+        done: false,
+      },
+    ]);
+  };
+  const editTodos = (todo: Todo) => {
+    setTodos([
+      ...todos.map((e) => {
+        if (e.id == todo.id) {
+          return todo;
+        }
+        return e;
+      }),
+    ]);
+  };
+  const deleteTodos = (todo: Todo) => {
+    setTodos([...todos.filter((e) => e.id != todo.id)]);
+  };
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Container>
+        <AddTodo addTodo={addTodo} />
+        <Paper>
+          <List>
+            {todos &&
+              todos.map((todo) => (
+                <TodoComponent
+                  key={todo.id}
+                  todo={todo}
+                  editTodos={editTodos}
+                  deleteTodos={deleteTodos}
+                />
+              ))}
+          </List>
+        </Paper>
+      </Container>
     </>
   );
 };
